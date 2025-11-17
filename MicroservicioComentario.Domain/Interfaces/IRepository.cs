@@ -1,8 +1,5 @@
-﻿using System;
+﻿using MicroservicioComentario.Domain.Entities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MicroservicioComentario.Domain.Interfaces
 {
@@ -13,5 +10,10 @@ namespace MicroservicioComentario.Domain.Interfaces
         void Add(T entity);
         void Update(T entity);
         void Delete(int id);
+
+        // ✔ NUEVOS métodos requeridos
+        IEnumerable<Comentario> GetByTarea(int idTarea);
+        IEnumerable<Comentario> GetByDestinatario(int idUsuario);
+        IEnumerable<T1> Query<T1>(string v, object value);
     }
 }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MicroservicioComentario.Domain.Entities;
+﻿using MicroservicioComentario.Domain.Entities;
 using MicroservicioComentario.Domain.Interfaces;
+using System.Data.Common;
 
 namespace MicroservicioComentario.Application.Services
 {
@@ -22,6 +18,17 @@ namespace MicroservicioComentario.Application.Services
         public void Add(Comentario c) => _repo.Add(c);
         public void Update(Comentario c) => _repo.Update(c);
         public void Delete(int id) => _repo.Delete(id);
+
+        // ✔ NUEVOS MÉTODOS
+        public IEnumerable<Comentario> GetByTarea(int idTarea)
+        {
+            return _repo.Query<Comentario>(
+                @"CALL sp_comentarios_por_tarea(@IdTarea);",
+                new { IdTarea = idTarea }
+            );
+        }
+
+        public IEnumerable<Comentario> GetByDestinatario(int idUsuario)
+            => _repo.GetByDestinatario(idUsuario);
     }
 }
-

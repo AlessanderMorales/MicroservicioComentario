@@ -1,83 +1,107 @@
 ﻿using Dapper;
 using MicroservicioComentario.Domain.Entities;
 using MicroservicioComentario.Domain.Interfaces;
-using MicroservicioComentario.Infrastructure.Persistence;
+using MySql.Data.MySqlClient;
 
 namespace MicroservicioComentario.Infrastructure.Repository
 {
     public class ComentarioRepository : IRepository<Comentario>
     {
-        private readonly MySqlConnectionSingleton _connection;
+        private readonly MySqlConnection _connection;
 
-        public ComentarioRepository(MySqlConnectionSingleton connection)
+        public ComentarioRepository(MySqlConnection connection)
         {
             _connection = connection;
         }
 
         public IEnumerable<Comentario> GetAll()
         {
-            using var conn = _connection.CreateConnection();
+            string sql = @"
+        SELECT 
+            id_comentario AS IdComentario,
+            contenido AS Contenido,
+            fecha AS Fecha,
+            estado AS Estado,
+            id_tarea AS IdTarea,
+            id_usuario AS IdUsuario,
+            id_destinatario AS IdDestinatario
+        FROM Comentario
+        WHERE estado = 1
+        ORDER BY fecha DESC";
 
-            return conn.Query<Comentario>(
-                @"SELECT 
-                    id_comentario AS IdComentario,
-                    contenido AS Contenido,
-                    fecha,
-                    estado,
-                    id_tarea AS IdTarea,
-                    id_usuario AS IdUsuario,
-                    id_destinatario AS IdDestinatario
-                  FROM Comentario
-                  WHERE estado = 1
-                  ORDER BY fecha DESC");
+            return _connection.Query<Comentario>(sql);
         }
+
 
         public Comentario GetById(int id)
         {
-            using var conn = _connection.CreateConnection();
+            string sql = @"
+        SELECT 
+            id_comentario AS IdComentario,
+            contenido AS Contenido,
+            fecha AS Fecha,
+            estado AS Estado,
+            id_tarea AS IdTarea,
+            id_usuario AS IdUsuario,
+            id_destinatario AS IdDestinatario
+        FROM Comentario
+        WHERE id_comentario = @Id";
 
-            return conn.QueryFirstOrDefault<Comentario>(
-                @"SELECT 
-                    id_comentario AS IdComentario,
-                    contenido AS Contenido,
-                    fecha,
-                    estado,
-                    id_tarea AS IdTarea,
-                    id_usuario AS IdUsuario,
-                    id_destinatario AS IdDestinatario
-                  FROM Comentario
-                  WHERE id_comentario = @Id;",
-                new { Id = id });
+            return _connection.QueryFirstOrDefault<Comentario>(sql, new { Id = id });
         }
 
-        public void Add(Comentario entity)
+        public void Add(Comentario c)
         {
-            using var conn = _connection.CreateConnection();
+            string sql = @"
+                INSERT INTO Comentario
+                (contenido, id_tarea, id_usuario, id_destinatario)
+                VALUES (@Contenido, @IdTarea, @IdUsuario, @IdDestinatario)";
 
-            conn.Execute(
-                @"INSERT INTO Comentario (contenido, id_tarea, id_usuario, id_destinatario, estado)
-                  VALUES (@Contenido, @IdTarea, @IdUsuario, @IdDestinatario, @Estado)",
-                  entity);
+            _connection.Execute(sql, c);
         }
 
-        public void Update(Comentario entity)
+        public void Update(Comentario c)
         {
-            using var conn = _connection.CreateConnection();
+            string sql = @"
+                UPDATE Comentario
+                SET contenido = @Contenido,
+                    id_destinatario = @IdDestinatario
+                WHERE id_comentario = @IdComentario";
 
-            conn.Execute(
-                @"UPDATE Comentario
-                  SET contenido = @Contenido, estado = @Estado
-                  WHERE id_comentario = @IdComentario",
-                  entity);
+            _connection.Execute(sql, c);
         }
 
         public void Delete(int id)
         {
-            using var conn = _connection.CreateConnection();
-
-            conn.Execute(
-                @"UPDATE Comentario SET estado = 0 WHERE id_comentario = @Id;",
+            _connection.Execute(
+                "UPDATE Comentario SET estado = 0 WHERE id_comentario = @Id",
                 new { Id = id });
+        }
+
+        // ======================================
+        // ✔ Métodos personalizados
+        // ======================================
+
+        public IEnumerable<Comentario> GetByTarea(int idTarea)
+        {
+            return _connection.Query<Comentario>(
+                "CALL sp_comentarios_por_tarea(@IdTarea)",
+                new { IdTarea = idTarea });
+        }
+
+        public IEnumerable<Comentario> GetByDestinatario(int idUsuario)
+        {
+            return _connection.Query<Comentario>(
+                "CALL sp_comentarios_para_usuario(@IdUsuario)",
+                new { IdUsuario = idUsuario });
+        }
+
+        // ======================================
+        // ✔ MÉTODO FALTANTE (obligatorio por la interfaz)
+        // ======================================
+        public IEnumerable<T1> Query<T1>(string sql, object parameters)
+        {
+            return _connection.Query<T1>(sql, parameters);
         }
     }
 }

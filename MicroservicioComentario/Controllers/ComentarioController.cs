@@ -19,7 +19,29 @@ namespace MicroservicioComentario.Controllers
         public IActionResult GetAll() => Ok(_service.GetAll());
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id) => Ok(_service.GetById(id));
+        public IActionResult GetById(int id)
+        {
+            var comentario = _service.GetById(id);
+
+            if (comentario == null)
+                return NotFound(); // <-- ESTA ES LA CLAVE
+
+            return Ok(comentario);
+        }
+
+        // ✔ NUEVO: Comentarios por tarea
+        [HttpGet("tarea/{idTarea}")]
+        public IActionResult GetByTarea(int idTarea)
+        {
+            return Ok(_service.GetByTarea(idTarea));
+        }
+
+        // ✔ NUEVO: Comentarios destinados a un usuario
+        [HttpGet("destinatario/{idUsuario}")]
+        public IActionResult GetByDestinatario(int idUsuario)
+        {
+            return Ok(_service.GetByDestinatario(idUsuario));
+        }
 
         [HttpPost]
         public IActionResult Create(Comentario c)
