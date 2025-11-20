@@ -1,6 +1,5 @@
 ﻿using MicroservicioComentario.Domain.Entities;
 using MicroservicioComentario.Domain.Interfaces;
-using System.Data.Common;
 
 namespace MicroservicioComentario.Application.Services
 {
@@ -14,12 +13,15 @@ namespace MicroservicioComentario.Application.Services
         }
 
         public IEnumerable<Comentario> GetAll() => _repo.GetAll();
+
         public Comentario GetById(int id) => _repo.GetById(id);
+
         public void Add(Comentario c) => _repo.Add(c);
+
         public void Update(Comentario c) => _repo.Update(c);
+
         public void Delete(int id) => _repo.Delete(id);
 
-        // ✔ NUEVOS MÉTODOS
         public IEnumerable<Comentario> GetByTarea(int idTarea)
         {
             return _repo.Query<Comentario>(

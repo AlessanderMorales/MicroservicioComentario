@@ -11,9 +11,8 @@ namespace MicroservicioComentario.Domain.Interfaces
         void Update(T entity);
         void Delete(int id);
 
-        // ✔ NUEVOS métodos requeridos
         IEnumerable<Comentario> GetByTarea(int idTarea);
         IEnumerable<Comentario> GetByDestinatario(int idUsuario);
-        IEnumerable<T1> Query<T1>(string v, object value);
+        IEnumerable<T1> Query<T1>(string query, object parameters);
     }
 }

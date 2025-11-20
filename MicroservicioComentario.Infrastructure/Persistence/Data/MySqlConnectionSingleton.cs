@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
@@ -18,7 +14,8 @@ namespace MicroservicioComentario.Infrastructure.Persistence
         }
 
         public MySqlConnection CreateConnection()
-            => new MySqlConnection(_connectionString);
+        {
+            return new MySqlConnection(_connectionString);
+        }
     }
 }
-

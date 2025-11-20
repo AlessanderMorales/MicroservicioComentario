@@ -2,6 +2,7 @@
 using MicroservicioComentario.Domain.Entities;
 using MicroservicioComentario.Domain.Interfaces;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 
 namespace MicroservicioComentario.Infrastructure.Repository
 {
@@ -17,35 +18,34 @@ namespace MicroservicioComentario.Infrastructure.Repository
         public IEnumerable<Comentario> GetAll()
         {
             string sql = @"
-        SELECT 
-            id_comentario AS IdComentario,
-            contenido AS Contenido,
-            fecha AS Fecha,
-            estado AS Estado,
-            id_tarea AS IdTarea,
-            id_usuario AS IdUsuario,
-            id_destinatario AS IdDestinatario
-        FROM Comentario
-        WHERE estado = 1
-        ORDER BY fecha DESC";
+                SELECT 
+                    id_comentario AS IdComentario,
+                    contenido AS Contenido,
+                    fecha AS Fecha,
+                    estado AS Estado,
+                    id_tarea AS IdTarea,
+                    id_usuario AS IdUsuario,
+                    id_destinatario AS IdDestinatario
+                FROM Comentario
+                WHERE estado = 1
+                ORDER BY fecha DESC";
 
             return _connection.Query<Comentario>(sql);
         }
 
-
         public Comentario GetById(int id)
         {
             string sql = @"
-        SELECT 
-            id_comentario AS IdComentario,
-            contenido AS Contenido,
-            fecha AS Fecha,
-            estado AS Estado,
-            id_tarea AS IdTarea,
-            id_usuario AS IdUsuario,
-            id_destinatario AS IdDestinatario
-        FROM Comentario
-        WHERE id_comentario = @Id";
+                SELECT 
+                    id_comentario AS IdComentario,
+                    contenido AS Contenido,
+                    fecha AS Fecha,
+                    estado AS Estado,
+                    id_tarea AS IdTarea,
+                    id_usuario AS IdUsuario,
+                    id_destinatario AS IdDestinatario
+                FROM Comentario
+                WHERE id_comentario = @Id";
 
             return _connection.QueryFirstOrDefault<Comentario>(sql, new { Id = id });
         }
@@ -78,10 +78,6 @@ namespace MicroservicioComentario.Infrastructure.Repository
                 new { Id = id });
         }
 
-        // ======================================
-        // ✔ Métodos personalizados
-        // ======================================
-
         public IEnumerable<Comentario> GetByTarea(int idTarea)
         {
             return _connection.Query<Comentario>(
@@ -96,9 +92,6 @@ namespace MicroservicioComentario.Infrastructure.Repository
                 new { IdUsuario = idUsuario });
         }
 
-        // ======================================
-        // ✔ MÉTODO FALTANTE (obligatorio por la interfaz)
-        // ======================================
         public IEnumerable<T1> Query<T1>(string sql, object parameters)
         {
             return _connection.Query<T1>(sql, parameters);
