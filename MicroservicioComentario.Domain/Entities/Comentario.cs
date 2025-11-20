@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MicroservicioComentario.Domain.Entities
 {
@@ -13,7 +9,7 @@ namespace MicroservicioComentario.Domain.Entities
         public DateTime Fecha { get; set; }
         public int Estado { get; set; }
         public int IdTarea { get; set; }
-        public int IdUsuario { get; set; }  // Autor
+        public int IdUsuario { get; set; }
         public int? IdDestinatario { get; set; }
     }
 }
