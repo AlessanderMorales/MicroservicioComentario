@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MicroservicioComentario.Application.Services;
 using MicroservicioComentario.Domain.Entities;
 using MicroservicioComentario.Domain.Validators;
@@ -7,6 +8,7 @@ namespace MicroservicioComentario.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ComentarioController : ControllerBase
     {
         private readonly ComentarioService _service;
